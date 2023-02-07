@@ -1,7 +1,22 @@
 import json
 import requests
+from cryptography.fernet import Fernet
 
-credentials = json.loads(open('credentials.json').read())
+# opening the key
+with open('<PATHTOASECUREFOLDERFORKEYS>/cr.key', 'rb') as filekey:
+	key = filekey.read()
+
+# using the key
+fernet = Fernet(key)
+
+# opening the encrypted file
+with open('credentials.json', 'rb') as enc_file:
+	encrypted = enc_file.read()
+
+# decrypting the file
+decrypted = fernet.decrypt(encrypted)
+
+credentials = json.loads(decrypted)
 authentication = requests.auth.HTTPBasicAuth(credentials['username'], credentials['password'])
 
 url = 'https://api.github.com/repos/' + credentials['username'] + '/' + credentials['repository'] + '/traffic/views'
