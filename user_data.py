@@ -17,9 +17,10 @@ with open('credentials.json', 'rb') as enc_file:
 decrypted = fernet.decrypt(encrypted)
 
 credentials = json.loads(decrypted)
-authentication = requests.auth.HTTPBasicAuth(credentials['username'], credentials['password'])
+usr, pwd = credentials['username'], credentials['password']
+authentication = requests.auth.HTTPBasicAuth(usr, pwd)
 
-url = 'https://api.github.com/repos/' + credentials['username'] + '/' + credentials['repository'] + '/traffic/views'
+url = 'https://api.github.com/repos/{}/{}/traffic/views'.format(usr, pwd)
 data = requests.get(url, auth=authentication)
 data = data.json()
 
